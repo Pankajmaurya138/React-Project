@@ -1,0 +1,45 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import HemiDisplay from "./circle";
+class App extends React.Component{
+
+    state = {latitude:null,longitude:null}
+    componentDidMount(){
+        window.navigator.geolocation.getCurrentPosition(
+            (position)=>{
+                this.setState({latitude:position.coords.latitude,longitude:position.coords.longitude})
+            },
+            (error)=>{
+                this.setState({
+                    errorMessage:error.message
+                })
+            }
+        );
+    }
+    render(){
+        if(this.state.longitude && this.state.latitude && !this.state.errorMessage){
+            return (
+               <HemiDisplay latitude={this.state.latitude} longitude={this.state.longitude}/>
+            )
+        }
+        if(!this.state.longitude && !this.state.latitude && this.state.errorMessage){
+            return (
+                <div>
+                    ErrorMessage: {this.state.errorMessage}
+                </div>
+            )
+        }else{
+            return (
+                <div>
+                   Loading ...
+                </div>
+            )
+        }
+    }
+}
+
+
+ReactDOM.render(
+    <App/>,
+    document.querySelector('#root')
+)
